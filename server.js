@@ -4,11 +4,13 @@ const puppeteer = require('puppeteer');
 const app = express();
 const port = 3000;
 
-app.use(express.static('public'));
+// Измените эту строку, чтобы обслуживать файлы из корня проекта, а не из папки 'public'
+app.use(express.static('.'));
+
 app.use(express.text({ type: 'text/html' })); 
 
 app.post('/generate-pdf', async (req, res) => {
-    const html = req.body; 
+    const html = req.body;
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML to PDF Converter</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #htmlInput {
+            width: 90%;
+            height: calc(100% - 60px);
+            margin-bottom: 20px;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none; 
+        }
+
+        button {
+            width: 200px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ffa07a; 
+            color: black;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff7f50; 
+        }
+    </style>
+</head>
+<body>
+    <textarea id="htmlInput" placeholder="Insert HTML here..."></textarea>
+    <button onclick="convertToPDF()">Convert to PDF</button>
+
+    <script>
+        async function convertToPDF() {
+            const html = document.getElementById('htmlInput').value;
+            const response = await fetch('/generate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/html',
+                },
+                body: html
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'document.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } else {
+                alert('Ошибка при генерации PDF');
+            }
+        }
+    </script>
+</body>
+</html>
